@@ -1,0 +1,21 @@
+version: 2
+
+models:
+  - name: core_metrics
+    description: "Aggregated metrics store — one row per plan type"
+    columns:
+      - name: plan_type
+        description: "Subscription plan"
+        tests:
+          - unique
+          - not_null
+
+      - name: mrr
+        description: "Monthly recurring revenue for active customers"
+        tests:
+          - not_null
+
+      - name: churn_rate_pct
+        description: "Percentage of customers who have churned"
+        tests:
+          - not_null

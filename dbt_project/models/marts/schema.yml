@@ -1,0 +1,39 @@
+version: 2
+
+models:
+  - name: dim_customers
+    description: "One row per customer with segments and attributes"
+    columns:
+      - name: user_id
+        description: "Unique customer identifier"
+        tests:
+          - unique
+          - not_null
+
+      - name: tenure_segment
+        description: "Customer tenure bucket"
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['New', 'Established', 'Veteran']
+
+      - name: activity_status
+        description: "Customer activity bucket based on last login"
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['Active', 'At Risk', 'Dormant']
+
+  - name: fct_subscriptions
+    description: "Subscription facts including payment health and risk flags"
+    columns:
+      - name: user_id
+        description: "Unique customer identifier"
+        tests:
+          - unique
+          - not_null
+
+      - name: monthly_fee
+        description: "Monthly charge — must be positive"
+        tests:
+          - not_null

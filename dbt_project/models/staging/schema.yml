@@ -1,0 +1,34 @@
+version: 2
+
+models:
+  - name: stg_customers
+    description: "Cleaned and typed customer data from raw CSV"
+    columns:
+      - name: user_id
+        description: "Unique customer identifier"
+        tests:
+          - unique
+          - not_null
+
+      - name: signup_date
+        description: "Date the customer signed up"
+        tests:
+          - not_null
+
+      - name: plan_type
+        description: "Subscription plan"
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['Premium', 'Standard', 'Basic']
+
+      - name: monthly_fee
+        description: "Monthly charge in dollars"
+        tests:
+          - not_null
+
+      - name: is_churned
+        description: "True if the customer has churned"
+        tests:
+          - not_null
