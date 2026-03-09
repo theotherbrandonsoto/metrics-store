@@ -1,6 +1,6 @@
 # 📊 Metrics Store
 
-A production-style metrics store built on the modern data stack — demonstrating automated data ingestion, a multi-layer dbt pipeline, a local DuckDB warehouse, and a live Streamlit dashboard.
+A production-style metrics store built on the modern data stack — demonstrating automated data ingestion, a multi-layer dbt pipeline, a local DuckDB warehouse, a live Streamlit dashboard, and an AI analytics agent powered by Claude.
 
 **Author:** theotherbrandonsoto &nbsp;|&nbsp; [GitHub](https://github.com/theotherbrandonsoto) &nbsp;|&nbsp; [LinkedIn](https://www.linkedin.com/in/hirebrandonsoto/)
 
@@ -29,6 +29,8 @@ dbt metrics layer     core_metrics          — THE metrics store
 DuckDB                metrics_store.duckdb  — local analytical warehouse
      ↓
 Streamlit             dashboard.py          — live business dashboard
+     ↓
+Claude AI             AI analytics agent    — plain English Q&A on your metrics
 ```
 
 ---
@@ -40,7 +42,7 @@ Streamlit             dashboard.py          — live business dashboard
 | Staging | `stg_customers` | Reads raw CSV, casts types, renames columns |
 | Marts | `dim_customers` | One row per customer with tenure & activity segments |
 | Marts | `fct_subscriptions` | Subscription facts including payment health & at-risk flag |
-| Metrics | `core_metrics` | Aggregated metrics by plan — MRR, churn, engagement, risk |
+| Metrics | `core_metrics` | Aggregated metrics store — MRR, churn, engagement, risk |
 
 ---
 
@@ -57,6 +59,24 @@ Streamlit             dashboard.py          — live business dashboard
 
 ---
 
+## 🤖 AI Analytics Agent
+
+The dashboard includes a natural language analytics agent powered by the Claude API. The agent has full awareness of:
+
+- Every metric definition and how it is calculated
+- The complete data schema across all dbt layers
+- Live numbers pulled directly from DuckDB at runtime
+
+Example questions you can ask:
+- *"Why is churn so high?"*
+- *"Which plan should we focus on?"*
+- *"What does MRR tell us about the business?"*
+- *"Which customers are most at risk and what should we do about it?"*
+
+This turns the metrics store from a static dashboard into an interactive decision-support tool.
+
+---
+
 ## 🔍 Key Insights from the Data
 
 - **Total MRR: ~$517K** across 1,195 active customers
@@ -70,11 +90,12 @@ Streamlit             dashboard.py          — live business dashboard
 
 | Tool | Role |
 |---|---|
-| **Python** | Ingestion script, Streamlit dashboard |
+| **Python** | Ingestion script, Streamlit dashboard, agent orchestration |
 | **Kaggle API** | Automated dataset download |
 | **dbt Core** | Data transformation and metrics layer |
 | **DuckDB** | Local analytical warehouse |
 | **Streamlit** | Business intelligence dashboard |
+| **Claude API** | AI analytics agent (natural language Q&A) |
 | **pandas** | Data inspection and validation |
 
 ---
@@ -84,6 +105,7 @@ Streamlit             dashboard.py          — live business dashboard
 ### Prerequisites
 - Python 3.9+
 - A [Kaggle account](https://www.kaggle.com) with an API token
+- An [Anthropic account](https://console.anthropic.com) with an API key
 
 ### 1. Clone the repo
 ```bash
@@ -98,11 +120,12 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 3. Add Kaggle credentials
+### 3. Add credentials
 Create a `.env` file in the project root:
 ```
-KAGGLE_USERNAME=your_username
-KAGGLE_KEY=your_api_key
+KAGGLE_USERNAME=your_kaggle_username
+KAGGLE_KEY=your_kaggle_api_key
+ANTHROPIC_API_KEY=your_anthropic_api_key
 ```
 
 ### 4. Download the dataset
@@ -114,6 +137,7 @@ python scripts/ingest.py
 ```bash
 cd dbt_project
 dbt run
+dbt test
 cd ..
 ```
 
@@ -136,20 +160,42 @@ metrics-store/
 ├── dbt_project/
 │   ├── models/
 │   │   ├── staging/
-│   │   │   └── stg_customers.sql
+│   │   │   ├── stg_customers.sql
+│   │   │   └── schema.yml
 │   │   ├── marts/
 │   │   │   ├── dim_customers.sql
-│   │   │   └── fct_subscriptions.sql
+│   │   │   ├── fct_subscriptions.sql
+│   │   │   └── schema.yml
 │   │   └── metrics/
-│   │       └── core_metrics.sql
+│   │       ├── core_metrics.sql
+│   │       └── schema.yml
+│   ├── tests/
+│   │   └── assert_mrr_is_positive.sql
 │   └── dbt_project.yml
 ├── scripts/
 │   ├── ingest.py             ← Kaggle API download script
-│   └── dashboard.py          ← Streamlit dashboard
-├── .env                      ← Credentials (gitignored)
+│   └── dashboard.py          ← Streamlit dashboard + AI agent
+├── .env.example              ← Credential template (safe to commit)
 ├── .gitignore
 ├── requirements.txt
 └── README.md
+```
+
+---
+
+## 🧪 Data Quality Tests
+
+19 dbt tests run automatically against the pipeline covering:
+
+- **Uniqueness** — `user_id` is unique across all models
+- **Not null** — key columns are never empty
+- **Accepted values** — `plan_type`, `tenure_segment`, and `activity_status` only contain valid values
+- **Custom assertion** — MRR is always a positive number
+
+Run tests at any time with:
+```bash
+cd dbt_project
+dbt test
 ```
 
 ---
@@ -162,6 +208,7 @@ Most portfolio data projects stop at a notebook or a dashboard. This project is 
 - **Metrics as code** — business logic lives in version-controlled SQL, not buried in a BI tool
 - **Reusability** — the metrics layer can serve a dashboard, an API, or a downstream pipeline without redefining logic
 - **Freshness** — the Kaggle API integration means the pipeline can be re-run anytime to pull the latest data
+- **AI-augmented** — the Claude integration demonstrates how a metrics store can power intelligent, conversational analytics
 
 This directly mirrors the modern data stack architecture used at companies like Airbnb, Uber, and LinkedIn.
 
