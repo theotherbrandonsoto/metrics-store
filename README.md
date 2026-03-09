@@ -1,6 +1,6 @@
 # 📊 Metrics Store
 
-A production-style metrics store built on the modern data stack — demonstrating automated data ingestion, a multi-layer dbt pipeline, a local DuckDB warehouse, a live Streamlit dashboard, and an AI analytics agent powered by Claude.
+A production-style metrics store built on the modern data stack — demonstrating automated data ingestion, a multi-layer dbt pipeline, a local DuckDB warehouse, a live Streamlit dashboard, an AI analytics agent powered by Claude, and an MCP server for direct Claude Desktop connectivity.
 
 **Author:** theotherbrandonsoto &nbsp;|&nbsp; [GitHub](https://github.com/theotherbrandonsoto) &nbsp;|&nbsp; [LinkedIn](https://www.linkedin.com/in/hirebrandonsoto/)
 
@@ -27,10 +27,9 @@ dbt marts layer       dim_customers         — customer segments & attributes
 dbt metrics layer     core_metrics          — THE metrics store
      ↓
 DuckDB                metrics_store.duckdb  — local analytical warehouse
-     ↓
-Streamlit             dashboard.py          — live business dashboard
-     ↓
-Claude AI             AI analytics agent    — plain English Q&A on your metrics
+     ↓  ↓
+Streamlit             dashboard.py          — live business dashboard + AI chat
+MCP Server            mcp-server-duckdb     — Claude Desktop direct connectivity
 ```
 
 ---
@@ -77,6 +76,41 @@ This turns the metrics store from a static dashboard into an interactive decisio
 
 ---
 
+## 🔌 MCP Server — Claude Desktop Integration
+
+This project includes a Model Context Protocol (MCP) server that connects Claude Desktop directly to the DuckDB warehouse. This means you can query your live metrics in plain English from Claude Desktop without opening the dashboard.
+
+### Setup
+
+**Prerequisites:** `uv` installed (`brew install uv`)
+
+Add the following to your Claude Desktop config at `~/Library/Application Support/Claude/claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "duckdb": {
+      "command": "uvx",
+      "args": [
+        "mcp-server-duckdb",
+        "--db-path",
+        "/path/to/your/metrics-store/data/metrics_store.duckdb"
+      ]
+    }
+  }
+}
+```
+
+Restart Claude Desktop — the DuckDB connector will appear in the tools panel automatically.
+
+### Example queries in Claude Desktop
+- *"What tables are in my metrics store?"*
+- *"What is the MRR for each plan?"*
+- *"Which plan has the highest churn rate?"*
+- *"Show me all at-risk customers by plan"*
+
+---
+
 ## 🔍 Key Insights from the Data
 
 - **Total MRR: ~$517K** across 1,195 active customers
@@ -96,6 +130,7 @@ This turns the metrics store from a static dashboard into an interactive decisio
 | **DuckDB** | Local analytical warehouse |
 | **Streamlit** | Business intelligence dashboard |
 | **Claude API** | AI analytics agent (natural language Q&A) |
+| **MCP Server** | Claude Desktop direct connectivity via `mcp-server-duckdb` |
 | **pandas** | Data inspection and validation |
 
 ---
@@ -106,6 +141,8 @@ This turns the metrics store from a static dashboard into an interactive decisio
 - Python 3.9+
 - A [Kaggle account](https://www.kaggle.com) with an API token
 - An [Anthropic account](https://console.anthropic.com) with an API key
+- [Claude Desktop](https://claude.ai/download) (optional, for MCP integration)
+- `uv` installed (optional, for MCP integration)
 
 ### 1. Clone the repo
 ```bash
@@ -147,6 +184,9 @@ streamlit run scripts/dashboard.py
 ```
 
 Open `http://localhost:8501` in your browser.
+
+### 7. (Optional) Enable Claude Desktop MCP integration
+Follow the MCP Server setup instructions above, then restart Claude Desktop.
 
 ---
 
@@ -209,6 +249,7 @@ Most portfolio data projects stop at a notebook or a dashboard. This project is 
 - **Reusability** — the metrics layer can serve a dashboard, an API, or a downstream pipeline without redefining logic
 - **Freshness** — the Kaggle API integration means the pipeline can be re-run anytime to pull the latest data
 - **AI-augmented** — the Claude integration demonstrates how a metrics store can power intelligent, conversational analytics
+- **MCP-connected** — the MCP server exposes the warehouse as a live tool for AI agents, reflecting the cutting edge of the agentic data stack
 
 This directly mirrors the modern data stack architecture used at companies like Airbnb, Uber, and LinkedIn.
 
