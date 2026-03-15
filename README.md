@@ -3,7 +3,6 @@
 A production-style metrics store built on the modern data stack — demonstrating automated data ingestion, a multi-layer dbt pipeline, a local DuckDB warehouse, a live Streamlit dashboard, an AI analytics agent powered by Claude, and an MCP server for direct Claude Desktop connectivity.
 
 **Author:** theotherbrandonsoto &nbsp;|&nbsp; [GitHub](https://github.com/theotherbrandonsoto) &nbsp;|&nbsp; [LinkedIn](https://www.linkedin.com/in/hirebrandonsoto/)
-
 *Built with assistance from Claude.*
 ---
 
