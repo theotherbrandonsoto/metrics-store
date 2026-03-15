@@ -6,6 +6,22 @@ A production-style metrics store built on the modern data stack — demonstratin
 
 ---
 
+## 📌 Executive Summary
+
+### The Business Problem
+Most BI dashboards are built for analysts. Non-technical stakeholders — executives, CS leads, ops managers — either wait for someone to pull numbers for them or learn to live without the data entirely. The result is a bottleneck: one analyst fielding the same ad-hoc questions on repeat while the people who need answers most can't get them independently.
+
+### The Solution
+This project layers a conversational AI interface on top of a production-style metrics store. Stakeholders can ask plain-English questions directly against live DuckDB data — either through a Streamlit dashboard or via Claude Desktop using an MCP server — and get immediate, context-aware answers without writing a single query.
+
+### Project Impact
+When non-technical stakeholders can ask questions directly, analysts get their time back. Instead of fielding requests like "what's our churn rate by plan?" or "which customers are most at risk?", those answers are available on demand — in plain English, from the same verified metrics layer that powers the dashboard. Data access stops being a bottleneck and becomes a self-serve resource.
+
+### Next Steps
+In a production environment, the MCP server would connect to a cloud warehouse (Snowflake, BigQuery) rather than a local DuckDB file, with role-based access controls determining which metrics each user can query. Planned feature additions include multi-turn conversation memory so stakeholders can ask follow-up questions in context, and a query audit log so analysts can see what questions are being asked most — and use that signal to prioritize future dashboard builds.
+
+---
+
 ## 🧠 What is a Metrics Store?
 
 A metrics store is a middle layer between upstream data sources and downstream business applications. Rather than defining metrics independently in every BI tool, report, or pipeline, a metrics store establishes a **single source of truth** — metrics are defined once and reused everywhere.
